@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personajes</title>
+</head>
+
+
+<body>
+    
+    <header id="menu"></header>
+    <div class="mx-auto text-center my-2">
+        <a id="btnVolver" class="btn btn-success">Volver</a>        
+    </div>
+    <table id="tablePlayers" class="table border rounded w-75 mx-auto align-middle">
+        <thead>
+            <tr class="table-primary">
+                <th>Nombre</th>
+                <th>Imagen</th>
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="../js/jquery-3.6.1.min.js"></script>
+    <script>
+        var urlChampions = "https://apichampions.azurewebsites.net";
+
+        $(document).ready(function(){
+            $("#menu").load("menu.html");
+            loadPersonajes();
+        })
+
+        const parameters = new URLSearchParams(window.location.search);
+        function loadPersonajes() {
+
+            
+            var id = parameters.get("idSerie");
+            var url = "https://apiseriespersonajes2023.azurewebsites.net/";
+
+            var request ="/api/Series/PersonajesSerie/"+id;
+            var urlSeries = url + request;
+
+            $.ajax({
+                'url' : urlSeries,
+                'method' : "GET",
+                'dataType' : 'JSON',
+                success : function(data) {
+                    document.title = "Personajes ";
+                    $.each(data, function(index, personaje) { 
+                        var tr = $("<tr>");
+                        var tdName = $("<td>", { 'text' : personaje.nombre });
+
+                        var tdImage = $("<td>"),
+                            image = $("<img>", { 'src' : personaje.imagen });
+                            image.css("maxWidth","80px");
+
+                       
+                        image.appendTo(tdImage);
+                        
+                        tr.append(tdName, tdImage);
+                        $("#tablePlayers tbody").append(tr);
+                    });
+                    $("#btnVolver").attr("href","home.html");
+                }
+            });
+        }
+
+    </script>
+
+</body>
+</html>
